@@ -7,8 +7,9 @@ const MainCarousel = () => {
   const items = MainCarouselData.map((item) => (
     <img className="cursor-pointer" role="presentation" src={item.image} />
   ));
+
   return (
-    <div>
+    <div className="relative z-20">
       <AliceCarousel
         items={items}
         disableButtonsControls
