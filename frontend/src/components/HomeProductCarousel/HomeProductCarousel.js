@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import AliceCarousel from "react-alice-carousel";
-import ProductCard from "../ProductCard/ProductCard";
+import ProductCard from "../HomeProductCard/HomeProductCard";
 import { Button } from "@mui/material";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 

@@ -1,6 +1,8 @@
+import FullProductList from "./components/FullProductList/FullProductList";
 import Navbar from "./components/Navbar/Navbar";
 import "./index.css";
 import HomePage from "./pages/HomePage/HomePage";
+import Footer from "./components/Footer/Footer";
 
 function App() {
   return (
@@ -8,8 +10,10 @@ function App() {
       <div className="App">
         <Navbar />
         <div>
-          <HomePage />
+          {/* <HomePage /> */}
+          <FullProductList />
         </div>
+        <Footer />
       </div>
     </>
   );

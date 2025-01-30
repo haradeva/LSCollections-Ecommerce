@@ -1,8 +1,7 @@
 import React from "react";
 import MainCarousel from "../../components/MainCarousel/MainCarousel";
-import ProductCarousel from "../../components/ProductCarousel/ProductCarousel";
+import ProductCarousel from "../../components/HomeProductCarousel/HomeProductCarousel";
 import { sareeDummyData } from "../../data/sareeDummyData";
-import Footer from "../../components/Footer/Footer";
 
 const HomePage = () => {
   return (
@@ -13,7 +12,6 @@ const HomePage = () => {
         <ProductCarousel data={sareeDummyData} sectionName={"Best Sellers"} />
         <ProductCarousel data={sareeDummyData} sectionName={"Offers"} />
       </div>
-      <Footer />
     </div>
   );
 };
