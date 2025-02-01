@@ -4,6 +4,7 @@ import "./index.css";
 import HomePage from "./pages/HomePage/HomePage";
 import Footer from "./components/Footer/Footer";
 import ProductDetails from "./components/ProductDetails/ProductDetails";
+import Cart from "./components/Cart/Cart";
 
 function App() {
   return (
@@ -13,7 +14,8 @@ function App() {
         <div>
           {/* <HomePage /> */}
           {/* <FullProductList /> */}
-          <ProductDetails />
+          {/* <ProductDetails /> */}
+          <Cart />
         </div>
         <Footer />
       </div>
