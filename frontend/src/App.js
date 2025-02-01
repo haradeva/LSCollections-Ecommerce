@@ -3,15 +3,17 @@ import Navbar from "./components/Navbar/Navbar";
 import "./index.css";
 import HomePage from "./pages/HomePage/HomePage";
 import Footer from "./components/Footer/Footer";
+import ProductDetails from "./components/ProductDetails/ProductDetails";
 
 function App() {
   return (
     <>
-      <div className="App">
+      <div className="">
         <Navbar />
         <div>
           {/* <HomePage /> */}
-          <FullProductList />
+          {/* <FullProductList /> */}
+          <ProductDetails />
         </div>
         <Footer />
       </div>

@@ -1,10 +1,10 @@
 import React, { useState, useRef } from "react";
 import AliceCarousel from "react-alice-carousel";
-import ProductCard from "../HomeProductCard/HomeProductCard";
+import HomeProductCard from "../HomeProductCard/HomeProductCard";
 import { Button } from "@mui/material";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 
-const ProductCarousel = ({ data, sectionName }) => {
+const HomeProductCarousel = ({ data, sectionName }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const carouselRef = useRef(null);
 
@@ -30,7 +30,7 @@ const ProductCarousel = ({ data, sectionName }) => {
 
   const items = data.slice(0, 10).map((item, index) => (
     <div key={index} className="flex justify-center">
-      <ProductCard product={item} />
+      <HomeProductCard product={item} />
     </div>
   ));
 
@@ -99,4 +99,4 @@ const ProductCarousel = ({ data, sectionName }) => {
   );
 };
 
-export default ProductCarousel;
+export default HomeProductCarousel;
