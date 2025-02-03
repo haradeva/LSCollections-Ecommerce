@@ -6,7 +6,7 @@ import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-100 py-8">
+    <footer className="bg-gray-100 py-8 mt-10">
       <Container maxWidth="lg">
         <Grid2 container spacing={4} justifyContent="space-between">
           {/* Contact Section */}
