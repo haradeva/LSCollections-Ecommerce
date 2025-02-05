@@ -1,9 +1,14 @@
 import React from "react";
 import "./FullProductCard.css";
+import { useNavigate } from "react-router-dom";
 
 const FullProductCard = ({ product }) => {
+  const navigate = useNavigate();
   return (
-    <div className="full-product-card w-[15rem] m-3 transition-all cursor-pointer shadow">
+    <div
+      onClick={() => navigate(`/product/${5}`)}
+      className="full-product-card w-[15rem] m-3 transition-all cursor-pointer shadow"
+    >
       <div className="h-[20rem]">
         <img
           className="w-full h-full object-cover object-left-top"
