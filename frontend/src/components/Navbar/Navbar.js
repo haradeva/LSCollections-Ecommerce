@@ -355,7 +355,7 @@ export default function Navigation() {
 
               {/* Logo */}
               <div className="ml-4 flex lg:ml-0">
-                <a href="#">
+                <a href="/">
                   <span className="sr-only">LS Collections</span>
                   <img
                     alt="LSCollections"
