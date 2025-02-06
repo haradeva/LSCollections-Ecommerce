@@ -1,5 +1,6 @@
 const express = require("express");
-
+const dotenv = require("dotenv");
+dotenv.config();
 const cors = require("cors");
 
 const app = express();
@@ -12,5 +13,11 @@ app.get("/", (req, res) => {
     .status(200)
     .send({ messege: "welcome to lscollections", status: true });
 });
+
+const authRouters = require("./routes/auth.route");
+app.use("/auth", authRouters);
+
+const userRouters = require("./routes/user.route");
+app.use("/api/users", userRouters);
 
 module.exports = app;
