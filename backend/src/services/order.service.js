@@ -119,7 +119,7 @@ const usersOrderHistory = async (userId) => {
   }
 };
 
-const getAllOrder = async () => {
+const getAllOrders = async () => {
   return await Order.find()
     .populate({ path: "orderItems", populate: { path: "product" } })
     .lean();
@@ -142,6 +142,6 @@ module.exports = {
   cancelledOrder,
   findOrderById,
   usersOrderHistory,
-  getAllOrder,
+  getAllOrders,
   deleteOrder,
 };
