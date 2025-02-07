@@ -14,7 +14,7 @@ const createCart = async (user) => {
 
 const findUserCart = async (userId) => {
   try {
-    let cart = await Cart.findOne({ user: user });
+    let cart = await Cart.findOne({ user: userId });
 
     let cartItems = await CartItem.find({ cart: cart._id }).populate("product");
 
@@ -65,7 +65,7 @@ const addCartItem = async (userId, req) => {
 
       const createdCartItem = await cartItem.save();
       cart.cartItems.push(createdCartItem);
-      await cart.save;
+      await cart.save();
       return "Item aded to cart";
     }
   } catch (error) {

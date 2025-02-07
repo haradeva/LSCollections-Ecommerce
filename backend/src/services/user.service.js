@@ -9,7 +9,7 @@ const createUser = async (userData) => {
     const isUserExist = await User.findOne({ email });
 
     if (isUserExist) {
-      throw new Error(email, " is already registered!");
+      throw new Error(`${email} is already registered!`);
     }
 
     password = await bcrypt.hash(password, 8);
@@ -17,6 +17,8 @@ const createUser = async (userData) => {
     const user = await User.create({ firstName, lastName, email, password });
 
     console.log("Created User: ", user);
+
+    return user;
   } catch (error) {
     throw new Error(error.message);
   }
@@ -27,7 +29,7 @@ const findUserById = async (userId) => {
     const user = await User.findById(userId);
     // .populate("address");
     if (!user) {
-      throw new Error(" User not found with Id: ", userId);
+      throw new Error(`User not found with Id: ${userId}`);
     }
     return user;
   } catch (error) {
@@ -38,7 +40,7 @@ const getUserByEmail = async (email) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      throw new Error(" User not found email: ", email);
+      throw new Error(`User not found with email: ${email}`);
     }
     return user;
   } catch (error) {
@@ -49,6 +51,9 @@ const getUserByEmail = async (email) => {
 const getUserProfileByToken = async (token) => {
   try {
     const userId = jwtprovider.getUserIdFromToken(token);
+    if (!userId) {
+      throw new Error("Token is invalid or expired: ", userId);
+    }
 
     const user = await findUserById(userId);
     if (!user) {
