@@ -25,6 +25,7 @@ import { Avatar, Button, Menu, MenuItem } from "@mui/material";
 import { deepPurple } from "@mui/material/colors";
 import { navigation } from "./NavbarData";
 import { useNavigate } from "react-router-dom";
+import AuthModal from "../../auth/AuthModal";
 
 // const navigation = {
 //   categories: [
@@ -164,7 +165,7 @@ export default function Navigation() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
-  const [openAuthModel, setOpenAuthModel] = useState(false);
+  const [openAuthModal, setopenAuthModal] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const openUserMenu = Boolean(anchorEl);
   const jwt = localStorage.getItem("jwt");
@@ -178,7 +179,11 @@ export default function Navigation() {
   };
 
   const handleOpen = () => {
-    setOpenAuthModel(false);
+    setopenAuthModal(true);
+  };
+
+  const handleClose = () => {
+    setopenAuthModal(false);
   };
 
   const handleCategoryClick = (category, section, item, close) => {
@@ -359,7 +364,7 @@ export default function Navigation() {
                   <span className="sr-only">LS Collections</span>
                   <img
                     alt="LSCollections"
-                    src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600"
+                    src="https://tailwindui.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
                     className="h-8 w-auto"
                   />
                 </a>
@@ -487,7 +492,7 @@ export default function Navigation() {
               <div className="ml-auto flex items-center">
                 {/* Login or Signup */}
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                  {true ? (
+                  {false ? (
                     <div>
                       <Avatar
                         className="text-white"
@@ -560,6 +565,8 @@ export default function Navigation() {
           </div>
         </nav>
       </header>
+
+      <AuthModal handleClose={handleClose} open={openAuthModal} />
     </div>
   );
 }

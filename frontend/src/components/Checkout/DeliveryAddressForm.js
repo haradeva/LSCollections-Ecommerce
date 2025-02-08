@@ -9,7 +9,7 @@ const DeliveryAddressForm = () => {
     const address = {
       firstName: data.get("firstName"),
       lastName: data.get("lastName"),
-      address: data.get("address"),
+      streetAddress: data.get("streetAddress"),
       city: data.get("city"),
       state: data.get("state"),
       zip: data.get("zip"),
@@ -70,9 +70,9 @@ const DeliveryAddressForm = () => {
                 <Grid item xs={12}>
                   <TextField
                     required
-                    id="address"
-                    name="address"
-                    label="Address"
+                    id="streetAddress"
+                    name="streetAddress"
+                    label="Street Address"
                     fullWidth
                     autoComplete="street-address"
                     multiline
