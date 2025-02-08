@@ -14,7 +14,7 @@ const updateCartItem = async (userId, cartItemId, cartItemData) => {
     }
 
     if (user._id.toString() === userId.toString()) {
-      item.quantity = cartItemData;
+      item.quantity = cartItemData.quantity;
       item.price = item.quantity * item.product.price;
       item.discountedPrice = item.quantity * item.product.discountedPrice;
 
@@ -24,7 +24,7 @@ const updateCartItem = async (userId, cartItemId, cartItemData) => {
       throw new Error("you can't update the cart item ");
     }
   } catch (error) {
-    throw new Error(error.message);
+    throw new Error("Failed to update cart item in service: " + error.message);
   }
 };
 
@@ -33,7 +33,7 @@ const removeCartItem = async (userId, cartItemId) => {
     const cartItem = await findCartItemByID(cartItemId);
     const user = await userService.findUserById(userId);
     if (user._id.toString() === cartItem.userId.toString()) {
-      await CartItem.findByIdAndDelete(cartItemId);
+      return await CartItem.findByIdAndDelete(cartItemId);
     } else {
       throw new Error("you can't remove another users item ");
     }
@@ -44,7 +44,7 @@ const removeCartItem = async (userId, cartItemId) => {
 
 const findCartItemByID = async (cartItemId) => {
   try {
-    const cartItem = await CartItem.findById(cartItemId);
+    const cartItem = await CartItem.findById(cartItemId).populate("product");
     if (cartItem) {
       return cartItem;
     } else {

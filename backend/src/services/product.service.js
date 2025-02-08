@@ -2,6 +2,15 @@ const Category = require("../models/category.model");
 const Product = require("../models/product.model");
 
 const createProduct = async (reqData) => {
+  if (
+    !reqData.topLevelCategory ||
+    !reqData.secondLevelCategory ||
+    !reqData.thirdLevelCategory
+  ) {
+    throw new Error(
+      "All category names (top level, second level, and third level) are required."
+    );
+  }
   let topLevel = await Category.findOne({ name: reqData.topLevelCategory });
 
   if (!topLevel) {
@@ -9,6 +18,7 @@ const createProduct = async (reqData) => {
       name: reqData.topLevelCategory,
       level: 1,
     });
+    await topLevel.save();
   }
 
   let secondLevel = await Category.findOne({
@@ -22,6 +32,7 @@ const createProduct = async (reqData) => {
       parentCategory: topLevel._id,
       level: 2,
     });
+    await secondLevel.save();
   }
 
   let thirdLevel = await Category.findOne({
@@ -35,6 +46,7 @@ const createProduct = async (reqData) => {
       parentCategory: secondLevel._id,
       level: 3,
     });
+    await thirdLevel.save();
   }
 
   const product = new Product({

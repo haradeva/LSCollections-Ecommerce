@@ -28,7 +28,6 @@ const findUserCart = async (userId) => {
       totalPrice += cartItem.price;
       totalDiscountedPrice += cartItem.discountedPrice;
       totalItem += cartItem.quantity;
-      totalItem;
     }
 
     cart.totalPrice = totalPrice;
