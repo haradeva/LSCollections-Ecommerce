@@ -1,12 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Grid, TextField, IconButton, Button } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getUser, register } from "../state/stateAuth/Action";
 
 const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const jwt = localStorage.getItem("jwt");
+  const { auth } = useSelector((store) => store);
+
+  useEffect(() => {
+    if (jwt) {
+      dispatch(getUser(jwt));
+    }
+  }, [jwt, auth.jwt, dispatch]);
 
   // Function to toggle the password visibility
   const handleClickShowPassword = () => {
@@ -24,7 +35,7 @@ const RegisterForm = () => {
       password: data.get("password"),
     };
 
-    console.log("userData ", userData);
+    dispatch(register(userData));
   };
   return (
     <div>
