@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   Dialog,
   DialogBackdrop,
@@ -29,6 +29,8 @@ import {
 import FullProductCard from "./FullProductCard";
 import { sareeDummyData } from "../../data/sareeDummyData";
 import { filters, singleFilter } from "./FilterData";
+import { useDispatch, useSelector } from "react-redux";
+import { findProducts } from "../../state/stateProduct/Action";
 
 const sortOptions = [
   { name: "Price: Low to High", href: "#", current: false },
@@ -46,6 +48,19 @@ export default function FullProductList() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const param = useParams();
+  const dispatch = useDispatch();
+  const { product } = useSelector((store) => store);
+
+  const decodedQueryString = decodeURIComponent(location.search);
+  const searchParams = new URLSearchParams(decodedQueryString);
+  const colorValue = searchParams.get("color");
+  const sizeValue = searchParams.get("size");
+  const priceValue = searchParams.get("price");
+  const discount = searchParams.get("discount");
+  const sortValue = searchParams.get("sort");
+  const pageNumber = searchParams.get("page") || 1;
+  const stock = searchParams.get("stock");
 
   const handleFilterChange = (value, sectionId) => {
     const searchParams = new URLSearchParams(location.search);
@@ -73,6 +88,34 @@ export default function FullProductList() {
     const query = searchParams.toString();
     navigate({ search: `?${query}` });
   };
+
+  useEffect(() => {
+    const [minPrice, maxPrice] =
+      priceValue === null ? [0, 10000] : priceValue.split("-").map(Number);
+
+    const data = {
+      category: param.levelThree,
+      colors: colorValue || [],
+      sizes: sizeValue || [],
+      minPrice,
+      maxPrice,
+      minDiscount: discount || 0,
+      sort: sortValue || "price_low",
+      pageNumber: Math.max(0, pageNumber - 1),
+      pageSize: 10,
+      stock: stock,
+    };
+    dispatch(findProducts(data));
+  }, [
+    param.levelThree,
+    colorValue,
+    sizeValue,
+    priceValue,
+    discount,
+    sortValue,
+    pageNumber,
+    stock,
+  ]);
 
   return (
     <div className="bg-white">
@@ -555,9 +598,10 @@ export default function FullProductList() {
               {/* Product grid */}
               <div className="lg:col-span-4 w-full">
                 <div className="flex flex-wrap justify-center bg-white py-5 shadow-[0_-1px_5px_rgba(0,0,0,0.08)] ">
-                  {sareeDummyData.map((item) => (
-                    <FullProductCard product={item} />
-                  ))}
+                  {product.products &&
+                    product.products?.content?.map((item) => (
+                      <FullProductCard product={item} />
+                    ))}
                 </div>
               </div>
             </div>
