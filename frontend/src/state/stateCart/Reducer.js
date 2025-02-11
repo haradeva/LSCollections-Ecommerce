@@ -56,14 +56,19 @@ export const cartReducar = (state = initialState, action) => {
     case REMOVE_CART_ITEM_SUCCESS:
       return {
         ...state,
-        cartItems: state.cartItems.filter((item) => item.id !== action.payload),
+        cartItems: state.cartItems.filter(
+          (item) => item._id !== action.payload.cartItemId
+        ),
         loading: false,
       };
+
     case UPDATE_CART_ITEM_SUCCESS:
       return {
         ...state,
         cartItems: state.cartItems.map((item) =>
-          item.id === action.payload.id ? action.payload : item
+          item._id === action.payload.cartItemId
+            ? { ...item, ...action.payload.data }
+            : item
         ),
         loading: false,
       };

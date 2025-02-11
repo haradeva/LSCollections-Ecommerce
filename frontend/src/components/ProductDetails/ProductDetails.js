@@ -1,13 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Rating from "@mui/material/Rating";
 import { Radio, RadioGroup } from "@headlessui/react";
 import { Button, Grid, LinearProgress, Box } from "@mui/material";
 import ProductReviewCard from "./ProductReviewCard";
 import HomeProductCarousel from "../../components/HomeProductCarousel/HomeProductCarousel";
 import { sareeDummyData } from "../../data/sareeDummyData";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { findProductById } from "../../state/stateProduct/Action";
+import { addItemToCart } from "../../state/stateCart/Action";
 
-const product = {
+const dummyproducts = {
   name: "Basic Tee 6-Pack",
   price: "$192",
   href: "#",
@@ -55,6 +58,7 @@ const product = {
   details:
     'The 6-Pack includes two black, two white, and two heather gray Basic Tees. Sign up for our subscription service and be the first to get new, exciting colors, like our upcoming "Charcoal Gray" limited release.',
 };
+
 const reviews = { href: "#", average: 4, totalCount: 117 };
 
 function classNames(...classes) {
@@ -62,14 +66,38 @@ function classNames(...classes) {
 }
 
 export default function ProductDetails() {
-  const [selectedColor, setSelectedColor] = useState(product.colors[0]);
-  const [selectedSize, setSelectedSize] = useState(product.sizes[2]);
+  const { product } = useSelector((store) => store);
+  const [selectedColor, setSelectedColor] = useState("");
+  const [selectedSize, setSelectedSize] = useState("");
 
   const navigate = useNavigate();
+  const params = useParams();
+  const dispatch = useDispatch();
 
   const handleAddToCart = () => {
+    const data = {
+      productId: params.productId,
+      size: selectedSize,
+      quantity: 1,
+    };
+    console.log("productDetails size data", data);
+    dispatch(addItemToCart(data));
     navigate("/cart");
   };
+
+  useEffect(() => {
+    dispatch(findProductById(params.productId));
+  }, [params.productId, dispatch]);
+
+  useEffect(() => {
+    console.log("Fetched Product Data:", product);
+  }, [product]);
+
+  if (!product) {
+    return (
+      <p className="text-center text-gray-500">Loading product details...</p>
+    );
+  }
 
   return (
     <div className="bg-white lg:px-20">
@@ -79,7 +107,7 @@ export default function ProductDetails() {
             role="list"
             className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8"
           >
-            {product.breadcrumbs.map((breadcrumb) => (
+            {dummyproducts.breadcrumbs.map((breadcrumb) => (
               <li key={breadcrumb.id}>
                 <div className="flex items-center">
                   <a
@@ -103,11 +131,11 @@ export default function ProductDetails() {
             ))}
             <li className="text-sm">
               <a
-                href={product.href}
+                href={dummyproducts.href}
                 aria-current="page"
                 className="font-medium text-gray-500 hover:text-gray-600"
               >
-                {product.name}
+                {dummyproducts.name}
               </a>
             </li>
           </ol>
@@ -118,13 +146,17 @@ export default function ProductDetails() {
           <div className="flex flex-col items-center">
             <div className="overflow-hidden rounded-lg max-w-[30rem] max-h-[35rem]">
               <img
-                alt={product.images[0].alt}
-                src={product.images[0].src}
-                className="h-full w-ful object-cover object-center"
+                src={
+                  product.product?.imageUrl ||
+                  product.image ||
+                  "https://via.placeholder.com/150"
+                }
+                alt={product?.name || "Product Image"}
+                className="h-full w-full object-cover object-center"
               />
             </div>
             <div className="flex flex-wrap space-x-5 justify-center">
-              {product.images.map((image) => (
+              {dummyproducts.images.map((image) => (
                 <div className="aspect-h-2 aspct-w-3 overflow-hidden rounded-lg max-w-[5rem] max-h-[5rem] mt-4">
                   <img
                     src={image.src}
@@ -140,21 +172,34 @@ export default function ProductDetails() {
           <div className="lg:col-span-1 max-auto max-w-2xl px-4 pb-16 sm:px-6 lg:max-w-7xl lg:px-8 lg:pb-24">
             <div className="lg:col-span-2 ">
               <h1 className="text-lg lg:text-xl font-semibold text-gray-900">
-                PRATHAM BLUE
+                {product.product?.brand}
               </h1>
               <h1 className="text-lg lg:text-xl text-gray-900 opacity-60 pt-1">
-                Embroidered Bollywood Georgette Saree
+                {product.product?.title}
               </h1>
             </div>
 
             {/* Options */}
             <div className="mt-4 lg:row-span-3 lg:mt-0">
-              <h2 className="sr-only">Product information</h2>
+              <h2 className="sr-only">{product.product?.description}</h2>
 
               <div className="flex space-x-5 items-center text-lg lg:text-xl text-gray-900 mt-6">
-                <p className="font-semibold">₹789</p>
-                <p className="line-through opacity-50">₹3,999</p>
-                <p className="text-green-600 font-semibold">80% off</p>
+                <p className="font-semibold">
+                  ₹{product.product?.discountedPrice || product.product?.price}
+                </p>
+                {product.product?.discountedPrice && (
+                  <>
+                    <p className="line-through opacity-50">
+                      ₹{product.product?.price}
+                    </p>
+                    <p className="text-green-600 font-semibold">
+                      {product.product?.discountPercentage ||
+                        product.product?.discountPercent ||
+                        "0"}
+                      % Off
+                    </p>
+                  </>
+                )}
               </div>
 
               {/* Reviews */}
@@ -179,7 +224,7 @@ export default function ProductDetails() {
                       onChange={setSelectedColor}
                       className="flex items-center gap-x-3"
                     >
-                      {product.colors.map((color) => (
+                      {dummyproducts.colors.map((color) => (
                         <Radio
                           key={color.name}
                           value={color}
@@ -204,60 +249,28 @@ export default function ProductDetails() {
 
                 {/* Sizes */}
                 <div className="mt-10">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-medium text-gray-900">Size</h3>
-                    <a
-                      href="#"
-                      className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
-                    >
-                      Size guide
-                    </a>
-                  </div>
-
+                  <h3 className="text-sm font-medium text-gray-900">Size</h3>
                   <fieldset aria-label="Choose a size" className="mt-4">
                     <RadioGroup
                       value={selectedSize}
-                      onChange={setSelectedSize}
+                      onChange={setSelectedSize} // ✅ Updates state on selection
                       className="grid grid-cols-4 gap-4 sm:grid-cols-8 lg:grid-cols-4"
                     >
-                      {product.sizes.map((size) => (
+                      {product.product?.size?.map((size) => (
                         <Radio
                           key={size.name}
-                          value={size}
-                          disabled={!size.inStock}
+                          value={size.name} // ✅ Stores selected size name
+                          // ✅ Disables out-of-stock sizes
                           className={classNames(
-                            size.inStock
+                            true
                               ? "cursor-pointer bg-white text-gray-900 shadow-xs"
                               : "cursor-not-allowed bg-gray-50 text-gray-200",
                             "group relative flex items-center justify-center rounded-md border px-4 py-3 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-hidden data-focus:ring-2 data-focus:ring-indigo-500 sm:flex-1 sm:py-6"
                           )}
                         >
                           <span>{size.name}</span>
-                          {size.inStock ? (
-                            <span
-                              aria-hidden="true"
-                              className="pointer-events-none absolute -inset-px rounded-md border-2 border-transparent group-data-checked:border-indigo-500 group-data-focus:border"
-                            />
-                          ) : (
-                            <span
-                              aria-hidden="true"
-                              className="pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200"
-                            >
-                              <svg
-                                stroke="currentColor"
-                                viewBox="0 0 100 100"
-                                preserveAspectRatio="none"
-                                className="absolute inset-0 size-full stroke-2 text-gray-200"
-                              >
-                                <line
-                                  x1={0}
-                                  x2={100}
-                                  y1={100}
-                                  y2={0}
-                                  vectorEffect="non-scaling-stroke"
-                                />
-                              </svg>
-                            </span>
+                          {selectedSize === size.name && (
+                            <span className="absolute inset-0 border-2 border-indigo-500 rounded-md" />
                           )}
                         </Radio>
                       ))}
@@ -301,7 +314,7 @@ export default function ProductDetails() {
 
                 <div className="mt-4">
                   <ul role="list" className="list-disc space-y-2 pl-4 text-sm">
-                    {product.highlights.map((highlight) => (
+                    {dummyproducts.highlights.map((highlight) => (
                       <li key={highlight} className="text-gray-400">
                         <span className="text-gray-600">{highlight}</span>
                       </li>
@@ -314,7 +327,9 @@ export default function ProductDetails() {
                 <h2 className="text-sm font-medium text-gray-900">Details</h2>
 
                 <div className="mt-4 space-y-6">
-                  <p className="text-sm text-gray-600">{product.details}</p>
+                  <p className="text-sm text-gray-600">
+                    {dummyproducts.details}
+                  </p>
                 </div>
               </div>
             </div>

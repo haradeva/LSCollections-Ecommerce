@@ -54,7 +54,7 @@ const createProduct = async (reqData) => {
     color: reqData.color,
     description: reqData.description,
     discountedPrice: reqData.discountedPrice,
-    discountPresent: reqData.discountPresent,
+    discountPercent: reqData.discountPercent,
     imageUrl: reqData.imageUrl,
     brand: reqData.brand,
     price: reqData.price,
@@ -101,11 +101,13 @@ const getAllProducts = async (reqQuery) => {
       minDiscount,
       sort,
       stock,
-      pageNumber,
-      pageSize,
+      pageNumber = 1, // Default to 1 if not provided
+      pageSize = 10, // Default to 10 if not provided
     } = reqQuery;
 
-    pageSize = pageSize || 10;
+    // Ensure pageNumber and pageSize are valid positive integers
+    pageNumber = Math.max(1, parseInt(pageNumber, 10) || 1);
+    pageSize = Math.max(1, parseInt(pageSize, 10) || 10);
 
     let query = Product.find().populate("category");
 
@@ -114,7 +116,7 @@ const getAllProducts = async (reqQuery) => {
       if (existCategory) {
         query = query.where("category").equals(existCategory._id);
       } else {
-        return { content: [], curentPage: 1, totalPages: 0 };
+        return { content: [], currentPage: 1, totalPages: 0 };
       }
     }
 
@@ -139,7 +141,7 @@ const getAllProducts = async (reqQuery) => {
     }
 
     if (minDiscount) {
-      query = query.where("discountPresent").gt(minDiscount);
+      query = query.where("discountPercent").gt(minDiscount);
     }
 
     if (stock) {
@@ -157,6 +159,7 @@ const getAllProducts = async (reqQuery) => {
 
     const totalProducts = await Product.countDocuments(query);
 
+    // **Fix:** Ensure `skip` is non-negative
     const skip = (pageNumber - 1) * pageSize;
 
     query = query.skip(skip).limit(pageSize);

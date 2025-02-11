@@ -16,7 +16,7 @@ const productSchema = new mongoose.Schema({
   discountedPrice: {
     type: Number,
   },
-  discountPresent: {
+  discountPercent: {
     type: Number,
   },
   quantity: {

@@ -25,6 +25,7 @@ import {
   RadioGroup,
   FormControl,
   FormControlLabel,
+  Pagination,
 } from "@mui/material";
 import FullProductCard from "./FullProductCard";
 import { sareeDummyData } from "../../data/sareeDummyData";
@@ -62,6 +63,15 @@ export default function FullProductList() {
   const pageNumber = searchParams.get("page") || 1;
   const stock = searchParams.get("stock");
 
+  const handlePaginationChange = (event, value) => {
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set("page", value);
+
+    const query = searchParams.toString();
+    console.log(searchParams, value);
+    navigate({ search: `?${query}` });
+  };
+
   const handleFilterChange = (value, sectionId) => {
     const searchParams = new URLSearchParams(location.search);
 
@@ -93,19 +103,22 @@ export default function FullProductList() {
     const [minPrice, maxPrice] =
       priceValue === null ? [0, 10000] : priceValue.split("-").map(Number);
 
-    const data = {
-      category: param.levelThree,
+    const requestData = {
+      category: param.levelThree || "", // Ensure it's not undefined
       colors: colorValue || [],
       sizes: sizeValue || [],
       minPrice,
       maxPrice,
-      minDiscount: discount || 0,
+      minDiscount: discount ? Number(discount) : 0, // Convert to number
       sort: sortValue || "price_low",
-      pageNumber: Math.max(0, pageNumber - 1),
+      pageNumber: Math.max(1, pageNumber),
       pageSize: 10,
       stock: stock,
     };
-    dispatch(findProducts(data));
+
+    console.log("Dispatching findProducts with:", requestData);
+
+    dispatch(findProducts(requestData));
   }, [
     param.levelThree,
     colorValue,
@@ -598,12 +611,24 @@ export default function FullProductList() {
               {/* Product grid */}
               <div className="lg:col-span-4 w-full">
                 <div className="flex flex-wrap justify-center bg-white py-5 shadow-[0_-1px_5px_rgba(0,0,0,0.08)] ">
-                  {product.products &&
-                    product.products?.content?.map((item) => (
+                  {product.products?.content?.length > 0 ? (
+                    product.products.content.map((item) => (
                       <FullProductCard product={item} />
-                    ))}
+                    ))
+                  ) : (
+                    <p>No products found.</p>
+                  )}
                 </div>
               </div>
+            </div>
+          </section>
+          <section className="w-full px=[3.6rem]">
+            <div className="px-4 py5 flex justify-center">
+              <Pagination
+                count={product.products?.totalPages}
+                color="secondary"
+                onChange={handlePaginationChange}
+              />
             </div>
           </section>
         </main>
