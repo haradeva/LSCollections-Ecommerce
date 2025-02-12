@@ -5,10 +5,12 @@ const orderSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "users",
   },
-  orderItems: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "orderItems",
-  },
+  orderItems: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "orderItems",
+    },
+  ],
   orderDate: {
     type: Date,
     required: true,

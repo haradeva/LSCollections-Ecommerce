@@ -7,7 +7,6 @@ import { removeCartItem, updateCartItem } from "../../state/stateCart/Action";
 
 const CartItem = ({ item }) => {
   const dispatch = useDispatch();
-
   const handleUpdateCartItem = (num) => {
     const data = {
       data: { quantity: item.quantity + num },

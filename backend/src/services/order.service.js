@@ -12,6 +12,7 @@ const createOrder = async (user, shippAddress) => {
       address = existAddress;
     } else {
       address = new Address(shippAddress);
+
       address.user = user;
       await address.save();
 
@@ -20,6 +21,7 @@ const createOrder = async (user, shippAddress) => {
     }
 
     const cart = await cartService.findUserCart(user._id);
+
     const orderItems = [];
     if (cart.cartItems.length === 0) {
       throw new Error("Cart is empty, cannot create an order");
@@ -37,7 +39,7 @@ const createOrder = async (user, shippAddress) => {
       const createdOrderItem = await orderItem.save();
       orderItems.push(createdOrderItem._id);
     }
-
+    console.log("Address===", address);
     const createdOrder = new Order({
       user,
       orderItems,
@@ -45,7 +47,7 @@ const createOrder = async (user, shippAddress) => {
       totalDiscountedPrice: cart.totalDiscountedPrice,
       discount: cart.discount,
       totalItem: cart.totalItem,
-      shippAddress: address,
+      shippingAddress: address,
     });
 
     const savedOrder = await createdOrder.save();
