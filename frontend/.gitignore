@@ -18,7 +18,9 @@
 .env.test.local
 .env.production.local
 
+
 src/components/Navbar/Navigation.js
+./DEPLOYMENT.md
 
 npm-debug.log*
 yarn-debug.log*
